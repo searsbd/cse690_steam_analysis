@@ -63,7 +63,7 @@ export class FileService {
      * @param fileContents the json information of the file you want to write
      * @param compressFile Whether or not you want to compress the file.
      */
-    public static writeFileJSON(fileName: string, fileContents: JSON, compressFile: boolean = false): void {
+    public static writeFileJSON(fileName: string, fileContents: any, compressFile: boolean = false): void {
         const stringFileContents: string = JSON.stringify(fileContents);
         FileService.writeFileString(fileName, stringFileContents, compressFile);
     }
