@@ -144,3 +144,11 @@ vite.config.ts.timestamp-*
 
 # secrets
 secrets/
+
+# reviews
+reviews/
+
+# failed downloads
+failed_downloads/
+
+*.fake.*

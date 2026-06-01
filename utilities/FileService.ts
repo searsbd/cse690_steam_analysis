@@ -35,7 +35,7 @@ export class FileService {
      * @param isCompressed Whether or not that file is compressed
      * @returns The JSON contained in that file
      */
-    public static readFileJSON(fileName: string, isCompressed: boolean = false): JSON {
+    public static readFileJSON(fileName: string, isCompressed: boolean = false): any {
         const plaintextContents: string = FileService.readFileString(fileName, isCompressed);
         return JSON.parse(plaintextContents);
     }
