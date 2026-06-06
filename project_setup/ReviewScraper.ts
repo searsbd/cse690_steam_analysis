@@ -15,13 +15,16 @@ export class ReviewScraper {
      * The amount of time to wait between requests. Increases based on the number of time
      * the program has been rate limited
      */
-    private waitTimeBetweenRequestsMilliseconds: number = 1000;
+    private waitTimeBetweenRequestsMilliseconds: number = 250;
 
     /**
      * For every game in the list of all apps, scrape their reviews
      */
     public async scrapeAllGames(): Promise<void> {
         const allAppIds: number[] = FileService.readFileJSON('./intermediary_files/ids.json');
+        // const failedDownloads: string[] = FileService.getDirectoryContents('./failed_downloads', false);
+        // const allAppIds: number[] = failedDownloads.map(withExtension => parseInt(withExtension.split(".")[0]));
+        // console.log(allAppIds)
         const startTimeMs: number = (new Date()).getTime();
         const startIndex: number = parseInt(FileService.readFileString('./intermediary_files/first-new-game.txt'));
         for (let i = startIndex; i < allAppIds.length; i++) {
@@ -37,6 +40,8 @@ export class ReviewScraper {
                 console.log(`For the ${allAppIds.length - i - 1} remaining games, there is an estimated ${timeRemainingHours} hours remaining.`);
                 const eta = new Date(Date.now() + timeRemainingHours * 3_600_000);
                 console.log(`Estimated finished at ${eta.toLocaleString()}`);
+                const fileName: string = `./intermediary_files/first-new-game.txt`;
+                FileService.writeFileString(fileName, `${i + 1}`)
             } catch {
                 const fileName: string = `./intermediary_files/first-new-game.txt`;
                 FileService.writeFileString(fileName, `${i}`)

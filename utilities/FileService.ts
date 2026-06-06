@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { gzipSync, gunzipSync } from 'node:zlib';
+import * as path from 'path';
 
 /**
  * Utility class used for dealing with files. Wrapper for tasks such
@@ -66,6 +67,31 @@ export class FileService {
     public static writeFileJSON(fileName: string, fileContents: any, compressFile: boolean = false): void {
         const stringFileContents: string = JSON.stringify(fileContents);
         FileService.writeFileString(fileName, stringFileContents, compressFile);
+    }
+
+    /**
+     * Returns a list of all files in a directory (not sub directories)
+     * 
+     * @param baseDirectoryPath The base path you want to do a shallow check
+     * for files in
+     * @returns a list of the direct child contents of that directory
+     */
+    public static getDirectoryContents(baseDirectoryPath: string, appendPath: boolean = true): string[] {
+        const allFiles: string[] = [];
+        const directoryContents = fs.readdirSync(baseDirectoryPath, { withFileTypes: true });
+        for (const entry of directoryContents) {
+            if (entry.isDirectory()) {
+                continue;
+            }
+            if (appendPath) {
+                const fullPath = `${baseDirectoryPath}/${entry.name}`
+                allFiles.push(fullPath);
+            } else {
+                allFiles.push(entry.name);
+            }
+            
+        }
+        return allFiles;
     }
 
 }
