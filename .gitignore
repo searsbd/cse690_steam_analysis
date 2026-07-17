@@ -151,4 +151,10 @@ reviews/
 # failed downloads
 failed_downloads/
 
+condensed_reviews/
+
+final_reviews/
+
+game_genres/
+
 *.fake.*

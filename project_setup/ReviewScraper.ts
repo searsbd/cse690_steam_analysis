@@ -11,11 +11,13 @@ export class ReviewScraper {
      */
     private readonly REVIEW_BASE_ENDPOINT: string = "https://store.steampowered.com/appreviews/"
 
+    private readonly GENRES_BASE_ENDPOINT: string = "https://store.steampowered.com/api/appdetails";
+
     /**
      * The amount of time to wait between requests. Increases based on the number of time
      * the program has been rate limited
      */
-    private waitTimeBetweenRequestsMilliseconds: number = 250;
+    private waitTimeBetweenRequestsMilliseconds: number = 1_500;
 
     /**
      * For every game in the list of all apps, scrape their reviews
@@ -31,7 +33,8 @@ export class ReviewScraper {
             const appID: number = allAppIds[i];
             try {
                 console.log(`Started scraping of reviews from game ${i + 1} of ${allAppIds.length}`);
-                await this.scrapeGameReviewsByAppId(appID);
+                //await this.scrapeGameReviewsByAppId(appID);
+                await this.scapeGameGenresByAppId(appID);
                 const finishTimeMs: number = (new Date()).getTime();
                 const timeSinceStartHours: number = (finishTimeMs - startTimeMs) / 3_600_000;
                 const averageTimePerGame: number = timeSinceStartHours / (i - startIndex + 1);
@@ -49,6 +52,20 @@ export class ReviewScraper {
             }
         }
         console.log("finished all games congrats");
+    }
+
+    private async scapeGameGenresByAppId(appID: number): Promise<void> {
+        const requestEndpoint: string = `${this.GENRES_BASE_ENDPOINT}?appids=${appID}`;
+        console.log(requestEndpoint)
+        const response: any = await this.requestWithExponentialRetry(requestEndpoint);
+        if (!response) {
+            const fileName: string = `./failed_downloads/${appID}.txt`;
+            FileService.writeFileString(fileName, 'failed to complete download')
+            return;
+        }
+        const fileName: string = `./game_genres/${appID}.json`;
+        FileService.writeFileJSON(fileName, response)
+        return;
     }
 
     /**
@@ -137,6 +154,8 @@ export class ReviewScraper {
         
         try {
             const response: Response = await fetch(fullEndpoint);
+            console.log(response)
+            console.log(`wait time: ${this.waitTimeBetweenRequestsMilliseconds}`)
             if (response.status === 429) {
                 this.waitTimeBetweenRequestsMilliseconds += 200;
                 await this.delay(2 ** timesRequested)

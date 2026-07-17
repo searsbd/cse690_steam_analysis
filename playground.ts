@@ -23,10 +23,10 @@ export class Playground {
      * of the total number off reviews
      */
     public static countCurrentReviewCount(): void {
-        const allReviewsFilePaths: string[] = FileService.getDirectoryContents("./reviews");
+        const allReviewsFilePaths: string[] = FileService.getDirectoryContents("./final_reviews");
         let reviewCount: number = 0;
         for (const filePath of allReviewsFilePaths) {
-            const reviews: any[] = FileService.readFileJSON(filePath, true);
+            const reviews: any[] = FileService.readFileJSON(filePath);
             reviewCount += reviews.length;
         }
         console.log(reviewCount);
@@ -34,8 +34,8 @@ export class Playground {
 
 }
 
-//Playground.printFileContents('./reviews/4753450part1.json.gz');
+Playground.printFileContents('./reviews/10part1.json.gz');
 
-// Playground.printFileContents('./intermediary_files/ids.json', false);
+//Playground.printFileContents('./intermediary_files/ids.json', false);
 
-Playground.countCurrentReviewCount();
+//Playground.countCurrentReviewCount();
